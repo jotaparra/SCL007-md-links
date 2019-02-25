@@ -19,6 +19,7 @@ console.log('total memory: ', os.totalmem(), 'bytes');    */
 
 const fs = require('fs');
 const path = require('path');
+const markdownLinkExtractor = require('markdown-link-extractor'); 
 /* fs.writeFile('./texto.txt', 'linea uno', function (err) {  //function = callback
     if (err) {
         console.log(err);
@@ -53,11 +54,21 @@ fs.lstat(ruta, (err, stats) => {
 }); */
 
 //extrae la extensión de un archivo
-path.extname('texto.txt');
-console.log(path.extname('texto.txt'));
+/* path.extname('texto.txt');
+console.log(path.extname('texto.txt')); */
 
 
 //Lee los contenidos de un directorio y devuelve 
-fs.readdir(commandToAdd1, (err, files) => {
+/* fs.readdir(commandToAdd1, (err, files) => {
     if (err){ console.log(err)
-    }
+    } */
+
+    let ruta = 'README.md'; 
+    path.extname(ruta);
+    console.log(path.extname(ruta));
+
+    var markdown = fs.readFileSync(ruta).toString();
+    var links = markdownLinkExtractor(markdown);
+    links.forEach(function (link) {
+        console.log(link);
+    });
