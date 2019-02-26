@@ -1,6 +1,11 @@
 {
-  "name": "md-links",
+  "name": "md-links",//nombre del módulo en npm
   "version": "0.1.0",
+  "description": "",//esto aparecerá como subtitulo en npm
+  "main": "index.js",
+  /*"bin": "{
+    
+    }",*/
   "devDependencies": {
     "@babel/code-frame": "^7.0.0"
   },
