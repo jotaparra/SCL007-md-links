@@ -4,19 +4,11 @@ const fs = require("fs");
 const path = require("path");
 const markdownLinkExtractor = require("markdown-link-extractor");
 const fetch = require("node-fetch");
-/* let ruta = 'README.md'; 
-    path.extname(ruta);
-    console.log(path.extname(ruta)); */
-/* mdLinks("./some/example.md")
-.then(link => {
-      // => [{ href, text, file }]
-})
-.catch(console.error); */
-const ruta = process.argv[2];
+
+
+const mdLinks = (ruta) => {
 let absolutPath = path.resolve(ruta);
 const extname = path.extname(absolutPath);
-
-const mdLinks = (file) => {
   //=> es la lista de argumentos que se le entregó al programa. El primero ya corresponde a "posicion 0 -> la dirección de node" "posicion 1 -> el archivo que está ejecutandose"
   if (extname == ".md") {
     const markdown = fs.readFileSync(absolutPath).toString();
@@ -29,8 +21,9 @@ const mdLinks = (file) => {
         .then(res => {
           //si la promesa es resuelta se ejecuta la función que le pasamos.
           const objectLinks = {
-            urlLink: res.url,
+            Links: res.url,
             text: text,
+            ruta: absolutPath,
             statusLink: res.status,
             statusText: res.statusText
           };
@@ -50,4 +43,5 @@ const mdLinks = (file) => {
     console.log("No es un archivo markdown");
   }
 };
-module.exports = {mdLinks};
+
+module.exports = mdLinks;
