@@ -5,10 +5,9 @@ const path = require("path");
 const markdownLinkExtractor = require("markdown-link-extractor");
 const fetch = require("node-fetch");
 
-
-const mdLinks = (ruta) => {
-let absolutPath = path.resolve(ruta);
-const extname = path.extname(absolutPath);
+const mdLinks = (ruta, options) => {
+  let absolutPath = path.resolve(ruta);
+  const extname = path.extname(absolutPath);
   //=> es la lista de argumentos que se le entregó al programa. El primero ya corresponde a "posicion 0 -> la dirección de node" "posicion 1 -> el archivo que está ejecutandose"
   if (extname == ".md") {
     const markdown = fs.readFileSync(absolutPath).toString();
@@ -20,14 +19,34 @@ const extname = path.extname(absolutPath);
       const fetchEachLink = fetch(links[i]) // guardamos todas las promesas[i] en una variable
         .then(res => {
           //si la promesa es resuelta se ejecuta la función que le pasamos.
-          const objectLinks = {
-            Links: res.url,
-            text: text,
-            ruta: absolutPath,
-            statusLink: res.status,
-            statusText: res.statusText
-          };
-          return objectLinks; // por qué lo retorno acá?
+          if (options === "--validate") {
+            let objectLinks = {
+              links: res.url,
+              text: text,
+              ruta: absolutPath,
+              statusLink: res.status,
+              statusText: res.statusText
+            };
+            return objectLinks;
+          } // por qué lo retorno acá?
+          if (options === "--validate") {
+            let objectLinks = {
+              links: res.url,
+              text: text,
+              ruta: absolutPath,
+              statusLink: res.status,
+              statusText: res.statusText
+            };
+            return objectLinks;
+          } // por qué lo retorno acá?
+          else {
+            let objectLinks = {
+              links: res.url,
+              text: text,
+              ruta: absolutPath
+            };
+            return objectLinks;
+          }
         })
         .catch(err => {
           const objectFail = { urlLink: url, statusLink: "Fail" };
