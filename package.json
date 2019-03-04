@@ -1,7 +1,16 @@
 {
   "name": "md-links",
   "version": "0.1.0",
-  "description": "",
+  "description": "Módulo que analiza los links de un archivo md y devuelve un arreglo con los links y su estado de validez  ",
+  "author": {
+    "name": "Jennifer Parra",
+    "email": "jparra.biblio@gmail.com"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "bin": {
+    "mdLinks": "./index.js"
+  },
   "devDependencies": {},
   "dependencies": {
     "markdown-link-extractor": "^1.2.0",
