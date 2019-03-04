@@ -13,7 +13,7 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "markdown-link-extractor": "^1.2.0",
+    "marked": "^0.6.1",
     "node-fetch": "^2.3.0"
   }
 }
