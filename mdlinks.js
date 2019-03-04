@@ -2,8 +2,8 @@
 
 const fs = require("fs");
 const path = require("path");
-const markdownLinkExtractor = require("markdown-link-extractor");
-const fetch = require("node-fetch");
+var marked = require("marked");
+const fetch = require("node-fetch");  
 
 const mdLinks = (ruta, options) => {
   let verify = fs.statSync(ruta);
@@ -30,7 +30,7 @@ const mdLinks = (ruta, options) => {
               statusText: res.statusText
             };
             return objectLinks;
-          } // por qué lo retorno acá?
+          } 
           else {
             let objectLinks = {
               links: res.url,
@@ -47,20 +47,41 @@ const mdLinks = (ruta, options) => {
       arrayFetch.push(fetchEachLink); //ahora colocamos todas las promesas que estaban guardadas en fetchEachLinks en el arreglo vacio que teniamos
     }
     Promise.all(arrayFetch).then(arrRes => {
-      //Hacemos solo UNA PROMESA que contenga el array de promesas.
+      //Hacemos solo UNA PROMESA que contenga el array de resultados.
       console.log(arrRes);
     });
-  } else if (verify.isDirectory() === true) {
-    let recursive = fs.readdirSync(ruta);
-    return Promise.all(
-      recursive.map(element => {
-        let joined = path.join(ruta, element);
-        return mdLinks(joined);
-      })
-    );
   } else {
     console.log("No es un archivo markdown");
   }
 };
 
 module.exports = mdLinks;
+
+
+// Taken from https://github.com/tcort/markdown-link-extractor/blob/master/index.js
+
+
+  function markdownLinkExtractor(markdown) {
+  var links = [];
+
+  var renderer = new marked.Renderer();
+
+  // Taken from https://github.com/markedjs/marked/issues/1279
+  var linkWithImageSizeSupport = /^!?\[((?:\[[^\[\]]*\]|\\[\[\]]?|`[^`]*`|[^\[\]\\])*?)\]\(\s*(<(?:\\[<>]?|[^\s<>\\])*>|(?:\\[()]?|\([^\s\x00-\x1f()\\]*\)|[^\s\x00-\x1f()\\])*?(?:\s+=(?:[\w%]+)?x(?:[\w%]+)?)?)(?:\s+("(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)))?\s*\)/;
+
+  marked.InlineLexer.rules.normal.link = linkWithImageSizeSupport;
+  marked.InlineLexer.rules.gfm.link = linkWithImageSizeSupport;
+  marked.InlineLexer.rules.breaks.link = linkWithImageSizeSupport;
+
+  renderer.link = function(href, title, text) {
+    links.push({ href: href, title: title, text: text });
+  };
+  renderer.image = function(href, title, text) {
+    // Remove image size at the end, e.g. ' =20%x50'
+    href = href.replace(/ =\d*%?x\d*%?$/, "");
+    links.push({ href: href, title: title, text: text });
+  };
+  marked(markdown, { renderer: renderer });
+
+  return links;
+};
