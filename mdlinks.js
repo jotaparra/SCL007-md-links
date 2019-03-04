@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 var marked = require("marked");
-const fetch = require("node-fetch");
+const fetch = require("node-fetch");  
 
 const mdLinks = (ruta, options) => {
   let verify = fs.statSync(ruta);
@@ -30,7 +30,7 @@ const mdLinks = (ruta, options) => {
               statusText: res.statusText
             };
             return objectLinks;
-          } // por qué lo retorno acá?
+          } 
           else {
             let objectLinks = {
               links: res.url,
@@ -47,17 +47,9 @@ const mdLinks = (ruta, options) => {
       arrayFetch.push(fetchEachLink); //ahora colocamos todas las promesas que estaban guardadas en fetchEachLinks en el arreglo vacio que teniamos
     }
     Promise.all(arrayFetch).then(arrRes => {
-      //Hacemos solo UNA PROMESA que contenga el array de promesas.
+      //Hacemos solo UNA PROMESA que contenga el array de resultados.
       console.log(arrRes);
     });
-  } else if (verify.isDirectory() === true) {
-    let recursive = fs.readdirSync(ruta);
-    return Promise.all(
-      recursive.map(element => {
-        let joined = path.join(ruta, element);
-        return mdLinks(joined);
-      })
-    );
   } else {
     console.log("No es un archivo markdown");
   }
@@ -66,7 +58,7 @@ const mdLinks = (ruta, options) => {
 module.exports = mdLinks;
 
 
-//---------------------------
+// Taken from https://github.com/tcort/markdown-link-extractor/blob/master/index.js
 
 
   function markdownLinkExtractor(markdown) {
